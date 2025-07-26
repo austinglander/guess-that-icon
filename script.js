@@ -23,7 +23,6 @@ class IconGuessingGame {
         this.nameLettersElement = document.getElementById('name-letters');
         this.guessInput = document.getElementById('guess-input');
         this.submitButton = document.getElementById('submit-guess');
-        this.skipButton = document.getElementById('skip-btn');
         this.giveUpButton = document.getElementById('give-up-btn');
         this.nextIconButton = document.getElementById('next-icon-btn');
         this.messageElement = document.getElementById('message');
@@ -40,7 +39,7 @@ class IconGuessingGame {
                 }
             }
         });
-        this.skipButton.addEventListener('click', () => this.skipGuess());
+        this.guessInput.addEventListener('input', () => this.updateSubmitButtonText());
         this.giveUpButton.addEventListener('click', () => this.giveUp());
         this.nextIconButton.addEventListener('click', () => this.startNewIcon());
     }
@@ -99,7 +98,7 @@ class IconGuessingGame {
         this.guessInput.disabled = false;
         this.guessInput.placeholder = "Enter your guess...";
         this.submitButton.disabled = false;
-        this.skipButton.disabled = false;
+        this.updateSubmitButtonText();
         this.giveUpButton.style.display = 'inline-block';
         this.nextIconButton.style.display = 'none';
         this.showMessage('', '');
@@ -158,6 +157,7 @@ class IconGuessingGame {
         }
 
         this.guessInput.value = '';
+        this.updateSubmitButtonText();
     }
 
     skipGuess() {
@@ -245,11 +245,15 @@ class IconGuessingGame {
 
     endGame() {
         this.submitButton.disabled = true;
-        this.skipButton.disabled = true;
         this.giveUpButton.style.display = 'none';
         this.nextIconButton.style.display = 'inline-block';
         // Keep input enabled so Enter key can work for next icon
         this.guessInput.placeholder = "Press Enter for next icon...";
+    }
+
+    updateSubmitButtonText() {
+        const hasInput = this.guessInput.value.trim().length > 0;
+        this.submitButton.textContent = hasInput ? 'Submit Guess' : 'Skip';
     }
 
     updateScore() {
