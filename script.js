@@ -91,7 +91,8 @@ class IconGuessingGame {
         this.gameEnded = false;
 
         // Update UI
-        this.iconElement.textContent = this.currentIcon;
+        this.iconElement.setAttribute('data-icon', this.currentIcon);
+        this.iconElement.textContent = ''; // Remove icon name from DOM
         this.updateAttemptsDisplay();
         this.displayIconName();
         this.guessInput.value = '';

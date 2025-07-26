@@ -73,9 +73,17 @@ h1 {
     font-size: 120px;
     color: #4285f4;
     transition: transform 0.3s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
-#current-icon:hover {
+#current-icon::before {
+    content: attr(data-icon);
+}
+
+.icon-container:hover #current-icon {
     transform: scale(1.05);
 }
 
