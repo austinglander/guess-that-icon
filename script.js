@@ -1,32 +1,4 @@
-// Material Icons list - a curated selection of common icons
-const MATERIAL_ICONS = [
-    'home', 'search', 'settings', 'favorite', 'star', 'share', 'delete', 'edit', 'add', 'remove',
-    'check', 'close', 'menu', 'more_vert', 'more_horiz', 'arrow_back', 'arrow_forward', 'arrow_upward', 'arrow_downward',
-    'refresh', 'sync', 'download', 'upload', 'cloud', 'folder', 'file_copy', 'save', 'print', 'email',
-    'phone', 'message', 'chat', 'notifications', 'alarm', 'schedule', 'event', 'today', 'calendar_today',
-    'location_on', 'map', 'directions', 'local_shipping', 'flight', 'hotel', 'restaurant', 'shopping_cart',
-    'account_circle', 'person', 'group', 'lock', 'visibility', 'visibility_off', 'help', 'info', 'warning',
-    'error', 'done', 'cancel', 'thumb_up', 'thumb_down', 'bookmark', 'language', 'public', 'wifi',
-    'bluetooth', 'battery_full', 'signal_cellular_4_bar', 'volume_up', 'volume_down', 'volume_off', 'mic',
-    'mic_off', 'camera', 'photo', 'video_call', 'call', 'call_end', 'music_note', 'play_arrow',
-    'pause', 'stop', 'skip_next', 'skip_previous', 'repeat', 'shuffle', 'playlist_add', 'queue_music',
-    'brightness_high', 'brightness_low', 'flash_on', 'flash_off', 'wb_sunny', 'wb_cloudy', 'ac_unit',
-    'beach_access', 'casino', 'fitness_center', 'golf_course', 'pool', 'spa', 'cake', 'coffee',
-    'local_pizza', 'local_bar', 'shopping_bag', 'credit_card', 'payment', 'monetization_on', 'trending_up',
-    'trending_down', 'show_chart', 'pie_chart', 'bar_chart', 'assessment', 'assignment', 'book',
-    'library_books', 'school', 'work', 'business', 'domain', 'store', 'local_offer', 'redeem',
-    'card_giftcard', 'loyalty', 'grade', 'build', 'bug_report', 'code', 'developer_mode', 'memory',
-    'computer', 'laptop', 'tablet', 'smartphone', 'watch', 'tv', 'headset', 'keyboard', 'mouse',
-    'router', 'scanner', 'security', 'lock_open', 'vpn_key', 'fingerprint', 'face', 'backup',
-    'cloud_download', 'cloud_upload', 'cloud_sync', 'folder_open', 'create_new_folder', 'insert_drive_file',
-    'attach_file', 'link', 'content_copy', 'content_cut', 'content_paste', 'undo', 'redo', 'select_all',
-    'text_format', 'format_bold', 'format_italic', 'format_underlined', 'format_color_text', 'highlight',
-    'insert_emoticon', 'mood', 'sentiment_satisfied', 'sentiment_dissatisfied', 'pets', 'eco', 'local_florist',
-    'wb_incandescent', 'lightbulb_outline', 'power', 'power_off', 'settings_power', 'restart_alt', 'update',
-    'system_update', 'get_app', 'launch', 'open_in_new', 'fullscreen', 'fullscreen_exit', 'zoom_in',
-    'zoom_out', 'center_focus_strong', 'filter_center_focus', 'tune', 'palette', 'color_lens', 'invert_colors',
-    'format_paint', 'brush', 'gesture', 'touch_app', 'pan_tool', 'back_hand', 'front_hand'
-];
+// Material Icons Guessing Game - Dynamically loads icons from Google's repository
 
 class IconGuessingGame {
     constructor() {
@@ -36,10 +8,12 @@ class IconGuessingGame {
         this.maxReveals = 0;
         this.attemptsLeft = 0;
         this.gameEnded = false;
+        this.iconList = null;
+        this.isLoading = false;
 
         this.initializeElements();
         this.bindEvents();
-        this.startNewIcon();
+        this.loadIconList();
     }
 
     initializeElements() {
@@ -71,7 +45,44 @@ class IconGuessingGame {
         this.nextIconButton.addEventListener('click', () => this.startNewIcon());
     }
 
+    async loadIconList() {
+        this.isLoading = true;
+        this.showMessage('Loading Material Icons...', 'info');
+        
+        try {
+            // Fetch the Material Icons from the official Google repository
+            const response = await fetch('https://raw.githubusercontent.com/google/material-design-icons/master/font/MaterialIcons-Regular.codepoints');
+            const text = await response.text();
+            
+            // Parse the codepoints file to extract icon names
+            this.iconList = text.split('\n')
+                .filter(line => line.trim())
+                .map(line => line.split(' ')[0])
+                .filter(name => name && name.length > 0);
+            
+            this.isLoading = false;
+            this.startNewIcon();
+        } catch (error) {
+            console.error('Failed to load icon list:', error);
+            // Fallback to a smaller curated list if the API fails
+            this.iconList = [
+                'home', 'search', 'settings', 'favorite', 'star', 'share', 'delete', 'edit', 'add', 'remove',
+                'check', 'close', 'menu', 'refresh', 'sync', 'download', 'upload', 'cloud', 'folder', 'save',
+                'print', 'email', 'phone', 'message', 'chat', 'notifications', 'alarm', 'schedule', 'event',
+                'location_on', 'map', 'directions', 'flight', 'hotel', 'restaurant', 'shopping_cart', 'person',
+                'group', 'lock', 'visibility', 'help', 'info', 'warning', 'error', 'done', 'cancel', 'wifi',
+                'bluetooth', 'camera', 'photo', 'music_note', 'play_arrow', 'pause', 'stop', 'volume_up'
+            ];
+            this.isLoading = false;
+            this.showMessage('Using fallback icon list', 'info');
+            setTimeout(() => this.startNewIcon(), 1000);
+        }
+    }
+
     startNewIcon() {
+        if (this.isLoading || !this.iconList) {
+            return;
+        }
         // Reset game state
         this.currentIcon = this.getRandomIcon();
         this.revealedLetters.clear();
@@ -95,7 +106,10 @@ class IconGuessingGame {
     }
 
     getRandomIcon() {
-        return MATERIAL_ICONS[Math.floor(Math.random() * MATERIAL_ICONS.length)];
+        if (!this.iconList || this.iconList.length === 0) {
+            return 'help'; // fallback icon
+        }
+        return this.iconList[Math.floor(Math.random() * this.iconList.length)];
     }
 
     displayIconName() {
