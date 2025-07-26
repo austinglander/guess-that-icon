@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess That Icon</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234285f4'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.41 7l-.71.71L8.47 8.3 7.76 9l1.41 1.41L8.46 11.12l.71.71L10.59 10.42 12 8.59l1.41 1.41.71-.71L12.71 7.88 11.3 6.47 10.59 7.18 9.88 6.47 8.47 7.88 9.18 8.59l.71-.71L8.47 6.47 7.76 7.18l.71.71L9.88 9.3l.71-.71L11.3 9.88 12.71 11.3 14.12 9.88 13.41 9.18l-.71.71 1.41 1.41.71-.71L13.41 9.18 12 7.76 10.59 9.18z'/></svg>">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Guess That Icon</h1>
+            <div class="score-container">
+                <span class="score">Score: <span id="score">0</span></span>
+                <span class="attempts-left">Attempts left for point: <span id="attempts-left">0</span></span>
+            </div>
+        </header>
+
+        <main class="game-area">
+            <div class="icon-container">
+                <i id="current-icon" class="material-icons"></i>
+            </div>
+
+            <div class="name-display">
+                <div id="name-letters"></div>
+            </div>
+
+            <div class="input-section">
+                <input type="text" id="guess-input" placeholder="Enter your guess..." autocomplete="off">
+                <button id="submit-guess">Submit Guess</button>
+                <button id="skip-btn" class="skip">Skip</button>
+            </div>
+
+            <div class="action-buttons">
+                <button id="give-up-btn" class="give-up">Give Up</button>
+                <button id="next-icon-btn" class="next-icon" style="display: none;">Next Icon</button>
+            </div>
+
+            <div class="message" id="message"></div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
